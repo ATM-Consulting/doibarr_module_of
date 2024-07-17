@@ -505,7 +505,7 @@ function generateODTOF(&$PDOdb, &$assetOf, $direct= false) {
 
 	//pre($societe,true); exit;
 
-	if (!empty($conf->quality->enabled))
+	if (isModEnabled('quality'))
 	{
 		$TControl = $assetOf->getControlPDF($PDOdb);
 	}
@@ -529,7 +529,7 @@ function generateODTOF(&$PDOdb, &$assetOf, $direct= false) {
 
 		$prod = &$TProductCachegenerateODTOF[$v->fk_product];
 
-		if(!empty($conf->nomenclature->enabled)){
+		if(isModEnabled('nomenclature')){
 
 				$n = new TNomenclature;
 
@@ -570,7 +570,7 @@ function generateODTOF(&$PDOdb, &$assetOf, $direct= false) {
 			mergeObjectAttr($prod, $TToMake[$k]);
 		}
 		else if($v->type == "NEEDED") {
-			if (!empty($conf->nomenclature->enabled) ){
+			if (isModEnabled('nomenclature') ){
 				if (!empty($TTypesProductsNomenclature)){
 				$type = $TTypesProductsNomenclature[$v->fk_product];
 				}else{
@@ -625,7 +625,7 @@ function generateODTOF(&$PDOdb, &$assetOf, $direct= false) {
 			,'nb_hour_preparation' => utf8_decode($v->nb_hour_prepare)
 			,'nb_heures_prevues' => utf8_decode($v->nb_hour)
 			,'note_private' => utf8_decode($v->note_private)
-			,'barcode' => (!empty($conf->barcode->enabled)) ? getBarCode($code) : ''
+			,'barcode' => (isModEnabled('barcode')) ? getBarCode($code) : ''
 		);
 
 		if (getDolGlobalInt('ASSET_DEFINED_USER_BY_WORKSTATION'))
@@ -961,7 +961,7 @@ function _fiche_ligne(&$form, &$of, $type){
 					,'qty_planned'=>$TAssetOFLine->qty
 					,'qty_used'=>((($of->status=='OPEN' || $of->status == 'CLOSE') && $form->type_aff) ? $form->texte('', 'TAssetOFLine['.$k.'][qty_used]', $TAssetOFLine->qty_used, 5,50) : $TAssetOFLine->qty_used.(!($user->hasRight('of','of','price')) ? '' : ' x '.price(price2num($TAssetOFLine->compo_cost,'MT'),0,'',1,-1,-1,$conf->currency)))
 					,'qty_toadd'=> $TAssetOFLine->qty - $TAssetOFLine->qty_used
-					,'workstations'=> $conf->workstationatm->enabled ? $TAssetOFLine->visu_checkbox_workstation($db, $of, $form, 'TAssetOFLine['.$k.'][fk_workstation][]') : ''
+					,'workstations'=> isModEnabled('workstationatm') ? $TAssetOFLine->visu_checkbox_workstation($db, $of, $form, 'TAssetOFLine['.$k.'][fk_workstation][]') : ''
 					,'delete'=> ($form->type_aff=='edit' && ($of->status=='DRAFT' || (getDolGlobalInt('OF_USE_DESTOCKAGE_PARTIEL') && $of->status!='CLOSE' && empty($TAssetOFLine->qty_used))) ) ? '<a href="javascript:deleteLine('.$TAssetOFLine->getId().',\'NEEDED\');">'.img_picto('Supprimer', 'delete.png').'</a>' : ''
 					,'fk_entrepot' => getDolGlobalInt('ASSET_MANUAL_WAREHOUSE') && ($of->status == 'DRAFT' || $of->status == 'VALID') && $form->type_aff == 'edit' ? $formProduct->selectWarehouses($TAssetOFLine->fk_entrepot, 'TAssetOFLine['.$k.'][fk_entrepot]', '', 1, 0, $TAssetOFLine->fk_product) : $TAssetOFLine->getLibelleEntrepot($PDOdb)
 		            ,'note_private'=>(($of->status=='DRAFT') ? $form->zonetexte('', 'TAssetOFLine['.$k.'][note_private]', $TAssetOFLine->note_private, 50,1) : $TAssetOFLine->note_private)
@@ -1045,7 +1045,7 @@ function _fiche_ligne(&$form, &$of, $type){
 
 			}
 			$nomenclature='';
-			if (!empty($conf->nomenclature->enabled)) {
+			if (isModEnabled('nomenclature')) {
 				dol_include_once('/nomenclature/class/nomenclature.class.php');
 
 				if ($of->status == 'DRAFT' && !$TAssetOFLine->nomenclature_valide) {
@@ -1542,7 +1542,7 @@ function _fiche(&$PDOdb, &$assetOf, $mode='edit',$fk_product_to_add=0,$fk_nomenc
 			,'action' => !empty($quicksave)?'quick-save':'save'
 			,'status'=>$assetOf->status
 			,'allow_delete_of_finish'=>$user->hasRight('of','of','allow_delete_of_finish')
-			,'ASSET_USE_MOD_NOMENCLATURE'=>!empty($conf->nomenclature->enabled) ? (int) $conf->nomenclature->enabled : 0
+			,'ASSET_USE_MOD_NOMENCLATURE'=>isModEnabled('nomenclature') ? (int) isModEnabled('nomenclature') : 0
 			,'OF_MINIMAL_VIEW_CHILD_OF'=>getDolGlobalInt('OF_MINIMAL_VIEW_CHILD_OF',0)
 			,'select_product'=>$select_product
 			,'select_workstation'=>$form->combo('', 'fk_asset_workstation', TWorkstation::getWorstations($PDOdb), -1)
@@ -1559,7 +1559,7 @@ function _fiche(&$PDOdb, &$assetOf, $mode='edit',$fk_product_to_add=0,$fk_nomenc
 			,'defined_show_categorie'=>getDolGlobalInt('OF_DISPLAY_PRODUCT_CATEGORIES')
 			,'hasChildren' => (int) !empty($Tid)
 			,'user_id'=>$user->id
-			,'workstation_module_activate'=>!empty($conf->workstationatm->enabled)
+			,'workstation_module_activate'=>isModEnabled('workstationatm')
 			,'show_cost'=>$user->hasRight('of','of','price')
 			,'langs'=>$langs
 			,'editField'=>($form->type_aff == 'view' ? '<a class="notinparentview quickEditButton" href="#" onclick="quickEditField('.$assetOf->getId().',this)" style="float:right">'.img_edit().'</a>' : '')
@@ -1567,7 +1567,7 @@ function _fiche(&$PDOdb, &$assetOf, $mode='edit',$fk_product_to_add=0,$fk_nomenc
 			,'link_update_qty_used'=> ($assetOf->status=='OPEN' || $assetOf->status == 'CLOSE') ? img_picto($langs->transnoentities('OfTransfertQtyPlannedIntoUsed'), 'rightarrow.png', 'onclick="updateQtyUsed(this)" class="classfortooltip"') : ''
 		)
 		,'stocktransfer'=>array(
-			'enable' => (int)(!empty($conf->stocktransfer->enabled))
+			'enable' => (int)(isModEnabled('stocktransfer'))
 			,'url'=>(file_exists(dol_buildpath('/stocktransfer/stocktransfer_card.php', 1))) ?  dol_buildpath('/stocktransfer/stocktransfer_card.php', 1) : dol_buildpath('/product/stock/stocktransfer/stocktransfer_card.php', 1)
 		)
 		,'rights'=>array(
@@ -1613,7 +1613,7 @@ function _fiche(&$PDOdb, &$assetOf, $mode='edit',$fk_product_to_add=0,$fk_nomenc
 //		$linktoelem = $doliform->showLinkToObjectBlock($assetOf, null, array('propal'));
 //
 //		$compatibleImportElementsList = false;
-//		if($user->rights->propal->creer && $assetOf->statut == Propal::STATUS_DRAFT)
+//		if($user->hasRight('propal', 'creer') && $assetOf->statut == Propal::STATUS_DRAFT)
 //		{
 //		    $compatibleImportElementsList = array('commande','propal'); // import from linked elements
 //		}

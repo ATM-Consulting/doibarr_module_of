@@ -16,7 +16,7 @@
 
 	global $db;
 
-	if (isset($conf->workstation->enabled) && $conf->workstation->enabled ){
+	if (isModEnabled('workstation') ){
 		dol_include_once('/workstationatm/class/workstation.class.php');
 	}
     require_once __DIR__.'/../class/ordre_fabrication_asset.class.php';
@@ -27,7 +27,7 @@
 	$o=new TAssetOFLine;
 	$o->init_db_by_vars($ATMdb);
 	//if (class_exists('TWorkstation')) {
-	if (!empty($conf->workstationatm->enabled)) {
+	if (isModEnabled('workstationatm')) {
 		$o=new TAssetWorkstation;
 		$o->init_db_by_vars($ATMdb);
 	}

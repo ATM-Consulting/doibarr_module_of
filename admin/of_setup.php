@@ -317,7 +317,7 @@ setup_print_title('ParamLinkedToOFGPAO');
 setup_print_on_off('OF_RANK_PRIOR_BY_LAUNCHING_DATE');
 setup_print_on_off('OF_MANAGE_NON_COMPLIANT');
 
-if(!empty($conf->workstationatm->enabled)){
+if(isModEnabled('workstationatm')){
 	$input = $form->multiselectarray('OF_WORKSTATION_NON_COMPLIANT', TWorkstation::getWorstations($PDOdb), getDolGlobalString('OF_WORKSTATION_NON_COMPLIANT') ? explode(',',getDolGlobalString('OF_WORKSTATION_NON_COMPLIANT') ) : '',0, 0, '', 0, 300);
 	setup_print_input_form_part('OF_WORKSTATION_NON_COMPLIANT', false, '', array(), $input);
 }

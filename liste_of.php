@@ -19,7 +19,7 @@ $langs->load('workstationatm@workstationatm');
 $langs->load('stocks');
 global $conf;
 $PDOdb = new TPDOdb;
-if (isset($conf->workstationatm->enabled) &&$conf->workstationatm->enabled && !class_exists('TWorkstation')) dol_include_once('/workstationatm/class/workstation.class.php');
+if (isModEnabled('workstationatm') && !class_exists('TWorkstation')) dol_include_once('/workstationatm/class/workstation.class.php');
 $TCacheWorkstation = TWorkstation::getWorstations($PDOdb);
 
 $action     = GETPOST('action', 'alpha');
@@ -460,7 +460,7 @@ if ($resql)
     print '<div class="div-table-responsive">';
     print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
-    if ($conf->workstationatm->enabled && $mode !== 'supplier_order') {
+    if (isModEnabled('workstationatm') && $mode !== 'supplier_order') {
 
         $tmptitle = $langs->trans('Workstations');
         $workstationsUsed = img_picto($tmptitle, 'workstation');
@@ -895,7 +895,7 @@ if ($resql)
 
             if (empty($reshook))
             {
-                if($prod->product_type == 9 && !empty($conf->subtotal->enabled)) {
+                if($prod->product_type == 9 && isModEnabled('subtotal')) {
                     print "<tr>";
                     print "<td>&nbsp;</td>";
                     print '<td colspan="6" '.($prod->qteCommandee>50 ? 'style="text-align:right; padding-right:'.((100 - $prod->qteCommandee)*10).'px;"' : 'style="text-align:left; padding-left:'.(($prod->qteCommandee)*10).'px;"').'><strong>';
@@ -1129,7 +1129,7 @@ if ($resql)
 
         echo '<div class="tabsAction">';
         echo '<a id="bt_createOf" class="butAction" href="fiche_of.php?action=new'.((!empty($fk_product)) ? '&fk_product='.$fk_product : '' ).'">'.$langs->trans('CreateOFAsset').'</a>';
-        if (!empty($conf->nomenclature->enabled) && !empty($fk_product))
+        if (isModEnabled('nomenclature') && !empty($fk_product))
         {
             require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
             dol_include_once('/' . ATM_ASSET_NAME . '/lib/asset.lib.php');

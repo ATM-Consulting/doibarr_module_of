@@ -320,7 +320,7 @@
 				$out.= '</select>';
 			}
 
-			if(!empty($conf->cliacropose->enabled)) { // TODO c'est naze, à refaire en utilisant la vraie autocompletion dispo depuis dolibarr 3.8 pour utiliser l'auto complete projets de doli si active (j'avais rajouté un script ajax/projects.php pour acropose)
+			if(isModEnabled('cliacropose')) { // TODO c'est naze, à refaire en utilisant la vraie autocompletion dispo depuis dolibarr 3.8 pour utiliser l'auto complete projets de doli si active (j'avais rajouté un script ajax/projects.php pour acropose)
 
 				// Autocomplétion
 				if(isset($selected)) {
@@ -356,7 +356,7 @@ function _getArrayNomenclature(&$PDOdb, $TAssetOFLine=false, $fk_product=false)
 
 	$TRes = array();
 
-	if (!$conf->nomenclature->enabled) return $TRes;
+	if (!isModEnabled('nomenclature')) return $TRes;
 
 	include_once DOL_DOCUMENT_ROOT.'/custom/nomenclature/class/nomenclature.class.php';
 

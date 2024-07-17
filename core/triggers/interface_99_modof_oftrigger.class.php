@@ -210,7 +210,7 @@ class Interfaceoftrigger
 
 		}
 		else if($action === 'TASK_MODIFY') {
-		    if(!empty($conf->workstationatm->enabled) && !empty($conf->of->enabled) ) {
+		    if(isModEnabled('workstationatm') && isModEnabled('of') ) {
 
 		        if( getDolGlobalInt('ASSET_CUMULATE_PROJECT_TASK') ) {
                     if (!isset($conf->tassetof))$conf->tassetof = new \stdClass(); // for warning
@@ -235,7 +235,7 @@ class Interfaceoftrigger
 		{
 		    global $db;
 
-		    if(!empty($conf->workstationatm->enabled) && !empty($conf->of->enabled))
+		    if(isModEnabled('workstationatm') && isModEnabled('of'))
 		    {
  		        $sql = "UPDATE ".MAIN_DB_PREFIX."asset_workstation_of SET fk_project_task = 0 WHERE fk_project_task = " . $object->id;
  		        $res = $db->query($sql);
@@ -246,7 +246,7 @@ class Interfaceoftrigger
 
 		}
 		elseif($action==='TASK_TIMESPENT_CREATE') {
-			if(!empty($conf->workstationatm->enabled)) {
+			if(isModEnabled('workstationatm')) {
 				define('INC_FROM_DOLIBARR',true);
 		    	dol_include_once('/of/config.php');
 				dol_include_once('/of/class/ordre_fabrication_asset.class.php');
@@ -282,7 +282,7 @@ class Interfaceoftrigger
 
 			/**  @var CommandeFournisseur $object */
 
-			if(!empty($conf->of->enabled)) {
+			if(isModEnabled('of')) {
 				define('INC_FROM_DOLIBARR',true);
 		    	dol_include_once('/of/config.php');
 				dol_include_once('/of/class/ordre_fabrication_asset.class.php');
@@ -506,7 +506,7 @@ class Interfaceoftrigger
 		}
         elseif ($action == 'ASSET_OF_DELETE')
         {
-            if (!empty($conf->stocktransfer->enabled)) {
+            if (isModEnabled('stocktransfer')) {
 
                 dol_include_once('/product/stock/stocktransfer/class/stocktransfer.class.php');
                 global $db;
@@ -541,7 +541,7 @@ class Interfaceoftrigger
 
         dol_include_once('/projet/class/task.class.php');
 		$deliveryDate = property_exists($object, 'delivery_date') ? $object->delivery_date : $object->date_livraison;
-        if(!empty($conf->of->enabled) && !empty($deliveryDate)) {
+        if(isModEnabled('of') && !empty($deliveryDate)) {
             define('INC_FROM_DOLIBARR',true);
             dol_include_once('/of/config.php');
             dol_include_once('/of/class/ordre_fabrication_asset.class.php');

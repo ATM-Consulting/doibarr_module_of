@@ -9,7 +9,7 @@ dol_include_once('/of/lib/of.lib.php');
 dol_include_once('/' . ATM_ASSET_NAME . '/class/asset.class.php');
 dol_include_once('/of/class/ordre_fabrication_asset.class.php');
 
-if (!empty($conf->nomenclature->enabled)) {
+if (isModEnabled('nomenclature')) {
      dol_include_once('/nomenclature/class/nomenclature.class.php');
 }
 
@@ -385,7 +385,7 @@ function _getArbo(&$PDOdb, &$TAssetOFLine, $fk_product, $fk_nomenclature)
 // TODO quand on utilise le module nomenclature la mise à jour des qté ne fonctionne pas terrible s'il y a plusieurs sous OF avec des sous enfants
 function _updateNeeded($TAssetOF, &$PDOdb, &$db, &$conf, $fk_product, $qty, &$TIdLineModified, &$TNewIdAssetOF, &$TAssetOFLine)
 {
-	if ($conf->nomenclature->enabled)
+	if (isModEnabled('nomenclature'))
 	{
 		//Récupération de l'arborescence
 		$TComposition = _getArbo($PDOdb, $TAssetOFLine, $fk_product, $TAssetOFLine->fk_nomenclature);

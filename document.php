@@ -195,11 +195,11 @@ if($object->id) {
                 $product = new Product($db);
                 $product->fetch($line->fk_product);
 		if((float)DOL_VERSION >= 13) {
-			if(!empty($conf->product->enabled)) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 1, $product, 'product');
-			else if(!empty($conf->service->enabled)) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 1, $product, 'product');
+			if(isModEnabled('product')) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 1, $product, 'product');
+			else if(isModEnabled('service')) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 1, $product, 'product');
 		} else {
-	                if(!empty($conf->product->enabled)) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
-	                else if(!empty($conf->service->enabled)) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
+	                if(isModEnabled('product')) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
+	                else if(isModEnabled('service')) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
 		}
 
                 $formfile->list_of_documents(

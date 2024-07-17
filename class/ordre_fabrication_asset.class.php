@@ -1382,7 +1382,7 @@ class TAssetOF extends TObjetStd{
 
 		$Tab=array();
 
-		if (!empty($conf->nomenclature->enabled))
+		if (isModEnabled('nomenclature'))
 		{
 			dol_include_once('/nomenclature/class/nomenclature.class.php');
 			if ($fk_nomenclature)
@@ -1624,7 +1624,7 @@ class TAssetOF extends TObjetStd{
 
             $TAssetOFLine->fk_product_fournisseur_price = -2;
 
-            if(! empty($conf->nomenclature->enabled) && ! $fk_nomenclature) {
+            if(isModEnabled('nomenclature') && ! $fk_nomenclature) {
                 dol_include_once('/nomenclature/class/nomenclature.class.php');
 
                 $TNomen = array();
@@ -1677,7 +1677,7 @@ class TAssetOF extends TObjetStd{
 			$this->errors[] = $interface->errors;
 		}
 
-		if($type=='TO_MAKE' && ( $fk_nomenclature>0 || empty($conf->nomenclature->enabled) ))
+		if($type=='TO_MAKE' && ( $fk_nomenclature>0 || !isModEnabled('nomenclature') ))
 		{
 			$this->addWorkstation($PDOdb, $fk_product,$fk_nomenclature,$quantite, $found);
 			$this->addProductComposition($PDOdb,$fk_product, $quantite,$idAssetOFLine,$fk_nomenclature);
@@ -1688,8 +1688,8 @@ class TAssetOF extends TObjetStd{
             $prod = new Product($db);
             $prod->fetch($fk_product);
 
-            if(!empty($conf->product->enabled)) $product_dir = $conf->product->multidir_output[$prod->entity] . '/' . get_exdir(0, 0, 0, 0, $prod, 'product') . dol_sanitizeFileName($prod->ref);
-            else if(!empty($conf->service->enabled)) $product_dir = $conf->service->multidir_output[$prod->entity] . '/' . get_exdir(0, 0, 0, 0, $prod, 'product') . dol_sanitizeFileName($prod->ref);
+            if(isModEnabled('product')) $product_dir = $conf->product->multidir_output[$prod->entity] . '/' . get_exdir(0, 0, 0, 0, $prod, 'product') . dol_sanitizeFileName($prod->ref);
+            else if(isModEnabled('service')) $product_dir = $conf->service->multidir_output[$prod->entity] . '/' . get_exdir(0, 0, 0, 0, $prod, 'product') . dol_sanitizeFileName($prod->ref);
 
             $this->copyAllFiles($product_dir);
         }
@@ -1780,8 +1780,8 @@ class TAssetOF extends TObjetStd{
     function addWorkStation(&$PDOdb, $fk_product, $fk_nomenclature = 0, $qty_needed = 1, $found = false) {
         global $conf;
 
-        if( isset($conf->workstationatm->enabled) && $conf->workstationatm->enabled) {
-            if( isset($conf->nomenclature->enabled) && $conf->nomenclature->enabled )  {
+        if( isModEnabled('workstationatm')) {
+            if( isModEnabled('nomenclature') )  {
 
                 if($fk_nomenclature > 0) {
                     dol_include_once('/nomenclature/class/nomenclature.class.php');
@@ -2176,7 +2176,7 @@ class TAssetOF extends TObjetStd{
 
 						// On récupère la ligne prix fournisseur correspondante
 						$sql = "SELECT rowid, fk_soc, fk_product, price, quantity, ref_fourn, tva_tx";
-						if (!empty($conf->assetatm->enabled)) $sql.= ', compose_fourni';
+						if (isModEnabled('assetatm')) $sql.= ', compose_fourni';
 						$sql.= " FROM ".MAIN_DB_PREFIX."product_fournisseur_price";
 						$sql.= " WHERE rowid = ".$ofLigne->fk_product_fournisseur_price;
 						$resql = $db->query($sql);
@@ -3189,7 +3189,7 @@ class TAssetOFLine extends TObjetStd{
 	function getNbDayForReapro() {
 		global $db, $user, $conf;
 
-		if(!empty($conf->supplierorderfromorder->enabled) && $this->type=='NEEDED') {
+		if(isModEnabled('supplierorderfromorder') && $this->type=='NEEDED') {
 
 			$stock_needed = TAssetOF::getProductStock($this->fk_product,0,true, getDolGlobalInt('CREATE_CHILDREN_OF_ON_VIRTUAL_STOCK'));
 
@@ -3599,7 +3599,7 @@ class TAssetOFLine extends TObjetStd{
            	$this->product->fetch($this->fk_product);
 
            	if($force_pmp || empty($this->pmp)) {
-				if(!empty($conf->nomenclature->enabled)) {
+				if(isModEnabled('nomenclature')) {
 					dol_include_once('/nomenclature/class/nomenclature.class.php');
 					$nd = new TNomenclatureDet();
 					$nd->fk_product = $this->fk_product;
@@ -3765,7 +3765,7 @@ class TAssetOFLine extends TObjetStd{
 	    global $conf;
 
 		$sql = "SELECT  pfp.rowid,  pfp.fk_soc,  pfp.price,  pfp.quantity,s.nom as 'name'";
-        if (!empty($conf->assetatm->enabled)) $sql.= ', pfp.compose_fourni';
+        if (isModEnabled('assetatm')) $sql.= ', pfp.compose_fourni';
 		$sql.= " FROM ".MAIN_DB_PREFIX."product_fournisseur_price pfp LEFT JOIN ".MAIN_DB_PREFIX."societe s ON (pfp.fk_soc=s.rowid)
 		WHERE fk_product = ".(int)$this->fk_product;
 
@@ -4082,7 +4082,7 @@ class TAssetWorkstationOF extends TObjetStd{
         else if($projectTask->planned_workload <= 0) $projectTask->planned_workload = $this->nb_hour * 3600;
 
         // FIXME je crois que cette partie ne sert à rien
-        if(empty($conf->gantt->enabled)) {
+        if(!isModEnabled('gantt')) {
             if(getDolGlobalInt('ASSET_CUMULATE_PROJECT_TASK') && !empty($OF->from_create)) {
 
                 //On prend la date la plus petite
@@ -4187,7 +4187,7 @@ class TAssetWorkstationOF extends TObjetStd{
 
         $date_start_search = strtotime('midnight', $date_start_search);
 
-        if (!empty($conf->workstationatm->enabled))
+        if (isModEnabled('workstationatm'))
         {
             // TODO mériterait un peu d'otpimisation en passant en param le timestamp de la date de fin de la tâche parente directement plutôt que de le fetcher ici
 //            if ($projectTask->fk_task_parent > 0)

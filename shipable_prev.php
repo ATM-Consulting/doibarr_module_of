@@ -234,7 +234,7 @@ if (!empty($search_non_compliant)) {
 //{
 //    if ($viewstatut < 4 && $viewstatut > -3)
 //    {
-//        if ($viewstatut == 1 && empty($conf->expedition->enabled)) $sqlOrderWhere.= ' AND c.fk_statut IN (1,2)';	// If module expedition disabled, we include order with status 'sending in process' into 'validated'
+//        if ($viewstatut == 1 && !isModEnabled('expedition')) $sqlOrderWhere.= ' AND c.fk_statut IN (1,2)';	// If module expedition disabled, we include order with status 'sending in process' into 'validated'
 //        else $sqlOrderWhere.= ' AND c.fk_statut = '.$viewstatut; // brouillon, validee, en cours, annulee
 //    }
 //    if ($viewstatut == 4)

@@ -624,7 +624,7 @@ class Actionsof extends \of\RetroCompatCommonHookActions
 		)
 		{
 			dol_include_once('/of/lib/of.lib.php');
-			if (isset($conf->subtotal->enabled) && $conf->subtotal->enabled && !class_exists('TSubtotal'))
+			if (isModEnabled('subtotal') && !class_exists('TSubtotal'))
 				dol_include_once('/subtotal/class/subtotal.class.php');
 
 				$jsonObjectData = array(
