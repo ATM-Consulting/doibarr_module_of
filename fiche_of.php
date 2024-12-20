@@ -197,7 +197,7 @@ function _action() {
 					}
 
 					//Association des opérations à une poste de travail (mode opératoire)
-					if (getDolGlobalSInt('ASSET_DEFINED_OPERATION_BY_WORKSTATION'))
+					if (getDolGlobalInt('ASSET_DEFINED_OPERATION_BY_WORKSTATION'))
 					{
 						$assetOf->TAssetWorkstationOF[$k]->set_tasks($PDOdb, $row['fk_task']);
 						unset($row['fk_task']);
